@@ -1,5 +1,7 @@
 # OOP in C Lab
 
+Nome in codice: **Canis Polymorphicus Manualis** 🐕⚙️
+
 English version: [README.md](README.md)
 
 Mini laboratorio didattico per capire come simulare concetti object-oriented in C puro.

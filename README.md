@@ -1,5 +1,7 @@
 # OOP in C Lab
 
+Codename: **Canis Polymorphicus Manualis** 🐕⚙️
+
 A small educational lab that shows how to simulate object-oriented programming concepts in plain C.
 
 The goal is to make visible what usually hides behind concepts such as:
