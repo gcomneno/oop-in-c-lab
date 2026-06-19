@@ -122,6 +122,27 @@ This downcast is safe only if that `Animal *` really points to the base part of 
 
 If it actually points to a `Cat`, C will not save you: that is undefined behavior. Trapdoor open.
 
+## Memory layout demo
+
+The demo prints the addresses of each concrete object and its embedded `base` field:
+
+```text
+Memory layout demo:
+  dog object address      = 0x...
+  dog.base address        = 0x...
+  same address?           = yes
+
+  cat object address      = 0x...
+  cat.base address        = 0x...
+  same address?           = yes
+```
+
+The exact addresses change on every run.
+
+The important part is that each object address matches the address of its first field.
+
+That is the practical reason why this lab can safely pass `&dog.base` or `&cat.base` around as `Animal *`.
+
 ## Concept 4: upcast and downcast
 
 Upcast:

@@ -122,6 +122,27 @@ Questo ritorno è sicuro solo se quell'`Animal *` punta davvero alla base di un 
 
 Se era un `Cat`, il C non ti salva: comportamento indefinito, botola aperta.
 
+## Demo del layout in memoria
+
+La demo stampa gli indirizzi di ogni oggetto concreto e del suo campo `base` incorporato:
+
+```text
+Memory layout demo:
+  dog object address      = 0x...
+  dog.base address        = 0x...
+  same address?           = yes
+
+  cat object address      = 0x...
+  cat.base address        = 0x...
+  same address?           = yes
+```
+
+Gli indirizzi precisi cambiano a ogni esecuzione.
+
+La cosa importante è che l'indirizzo dell'oggetto coincida con l'indirizzo del suo primo campo.
+
+Questo è il motivo pratico per cui nel lab possiamo passare `&dog.base` o `&cat.base` come `Animal *`.
+
 ## Concetto 4: upcast e downcast
 
 Upcast:
