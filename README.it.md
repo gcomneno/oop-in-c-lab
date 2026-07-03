@@ -143,6 +143,51 @@ La cosa importante è che l'indirizzo dell'oggetto coincida con l'indirizzo del 
 
 Questo è il motivo pratico per cui nel lab possiamo passare `&dog.base` o `&cat.base` come `Animal *`.
 
+## Esperimento in stile container_of
+
+La demo principale usa il barbatrucco del primo campo: `Animal base` è il primo membro di `Dog` e `Cat`, quindi l'indirizzo dell'oggetto concreto e l'indirizzo del campo `base` coincidono.
+
+L'esperimento separato su `container_of` mostra un caso più avanzato:
+
+```c
+typedef struct {
+    const char *label;
+    Animal base;
+    int marker;
+} WeirdDog;
+```
+
+Qui `Animal base` non è il primo campo.
+
+Quindi:
+
+```text
+&weird_dog != &weird_dog.base
+```
+
+Per recuperare un `WeirdDog *` esterno partendo da un `Animal *` interno, la demo usa `offsetof` e una piccola macro in stile `container_of`:
+
+```c
+#define container_of(ptr, type, member) \
+    ((type *)((char *)(ptr) - offsetof(type, member)))
+```
+
+L'idea è:
+
+1. `offsetof(WeirdDog, base)` ci dice quanti byte separano l'inizio di `WeirdDog` dal suo membro `base`.
+2. l'aritmetica su puntatori `char *` permette di muoversi byte per byte.
+3. sottraendo quell'offset dal puntatore al membro, otteniamo l'indirizzo della struct esterna.
+
+È una tecnica potente di C a basso livello, tipica del codice di sistema e dello stile del kernel Linux.
+
+Va usata con cautela. È valida solo quando il puntatore punta davvero a quel preciso membro dentro un oggetto del tipo richiesto.
+
+Esegui l'esperimento separato con:
+
+```bash
+make run-container-of
+```
+
 ## Concetto 4: upcast e downcast
 
 Upcast:

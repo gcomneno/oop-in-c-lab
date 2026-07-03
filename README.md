@@ -143,6 +143,51 @@ The important part is that each object address matches the address of its first 
 
 That is the practical reason why this lab can safely pass `&dog.base` or `&cat.base` around as `Animal *`.
 
+## container_of-style experiment
+
+The main demo relies on the first-field trick: `Animal base` is the first member of `Dog` and `Cat`, so the concrete object address and the embedded base address are the same.
+
+The separate `container_of` experiment shows a more advanced case:
+
+```c
+typedef struct {
+    const char *label;
+    Animal base;
+    int marker;
+} WeirdDog;
+```
+
+Here, `Animal base` is not the first field.
+
+That means:
+
+```text
+&weird_dog != &weird_dog.base
+```
+
+To recover the outer `WeirdDog *` from an inner `Animal *`, the demo uses `offsetof` and a small `container_of`-like macro:
+
+```c
+#define container_of(ptr, type, member) \
+    ((type *)((char *)(ptr) - offsetof(type, member)))
+```
+
+The idea is:
+
+1. `offsetof(WeirdDog, base)` tells us how many bytes separate the start of `WeirdDog` from its `base` member.
+2. `char *` pointer arithmetic lets us move byte by byte.
+3. subtracting that offset from the member pointer gives us the address of the outer struct.
+
+This is a powerful low-level C technique, often associated with systems code and the Linux kernel style.
+
+Use it carefully. It is only valid when the pointer really points to that exact member inside an object of the requested type.
+
+Run the separate experiment with:
+
+```bash
+make run-container-of
+```
+
 ## Concept 4: upcast and downcast
 
 Upcast:
