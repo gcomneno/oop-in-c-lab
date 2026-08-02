@@ -33,6 +33,11 @@ int main(void)
         .base = {
             .name = "Offset Fido",
             .vtable = NULL,
+            /*
+             * This wrapper demonstrates member recovery only.
+             * It is not a concrete Dog/Cat polymorphic object.
+             */
+            .type = ANIMAL_TYPE_UNKNOWN,
         },
         .marker = 42,
     };

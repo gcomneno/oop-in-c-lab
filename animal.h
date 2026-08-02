@@ -1,7 +1,21 @@
 #ifndef ANIMAL_H
 #define ANIMAL_H
 
+#include <stdbool.h>
+
 typedef struct Animal Animal;
+
+/*
+ * Identità concreta mantenuta esplicitamente a runtime.
+ *
+ * UNKNOWN usa il valore zero apposta:
+ * una struct azzerata non deve sembrare accidentalmente un Dog o un Cat.
+ */
+typedef enum {
+    ANIMAL_TYPE_UNKNOWN = 0,
+    ANIMAL_TYPE_DOG,
+    ANIMAL_TYPE_CAT,
+} AnimalType;
 
 /*
  * VTABLE:
@@ -32,17 +46,27 @@ typedef struct {
  * vtable:
  *   puntatore alla tabella dei metodi virtuali.
  *
- * Questo puntatore dice:
- *
- *   "Per questo oggetto, quali funzioni devo usare?"
+ * type:
+ *   identità concreta mantenuta esplicitamente a runtime.
  */
 struct Animal {
     const char *name;
     const AnimalVTable *vtable;
+    AnimalType type;
 };
 
-void animal_init(Animal *self, const char *name, const AnimalVTable *vtable);
+void animal_init(
+    Animal *self,
+    const char *name,
+    AnimalType type,
+    const AnimalVTable *vtable
+);
+
 const char *animal_get_name(const Animal *self);
+AnimalType animal_get_type(const Animal *self);
+
+bool animal_is_dog(const Animal *self);
+bool animal_is_cat(const Animal *self);
 
 /*
  * Metodi pubblici dell'interfaccia Animal.

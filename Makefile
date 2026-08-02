@@ -3,15 +3,23 @@ CFLAGS := -Wall -Wextra -Wpedantic -std=c11
 TARGET := oop-in-c-demo
 CONTAINER_OF_TARGET := container-of-demo
 OPAQUE_TARGET := opaque-demo
+CHECKED_DOWNCAST_TARGET := checked-downcast-demo
+
 SOURCES := main.c animal.c dog.c cat.c
 CONTAINER_OF_SOURCES := examples/container_of_demo.c
+
 OPAQUE_DIR := examples/opaque
 OPAQUE_SOURCES := $(OPAQUE_DIR)/opaque_demo.c \
                   $(OPAQUE_DIR)/opaque_animal.c \
                   $(OPAQUE_DIR)/opaque_dog.c \
                   $(OPAQUE_DIR)/opaque_cat.c
 
-.PHONY: all run run-container-of run-opaque clean
+CHECKED_DOWNCAST_SOURCES := examples/checked_downcast_demo.c \
+                            animal.c \
+                            dog.c \
+                            cat.c
+
+.PHONY: all run run-container-of run-opaque run-checked-downcast clean
 
 all: $(TARGET)
 
@@ -37,5 +45,14 @@ $(OPAQUE_TARGET): $(OPAQUE_SOURCES) \
 run-opaque: $(OPAQUE_TARGET)
 	./$(OPAQUE_TARGET)
 
+$(CHECKED_DOWNCAST_TARGET): $(CHECKED_DOWNCAST_SOURCES) animal.h dog.h cat.h
+	$(CC) $(CFLAGS) -I. $(CHECKED_DOWNCAST_SOURCES) -o $(CHECKED_DOWNCAST_TARGET)
+
+run-checked-downcast: $(CHECKED_DOWNCAST_TARGET)
+	./$(CHECKED_DOWNCAST_TARGET)
+
 clean:
-	rm -f $(TARGET) $(CONTAINER_OF_TARGET) $(OPAQUE_TARGET)
+	rm -f $(TARGET) \
+	      $(CONTAINER_OF_TARGET) \
+	      $(OPAQUE_TARGET) \
+	      $(CHECKED_DOWNCAST_TARGET)

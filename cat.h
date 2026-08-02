@@ -21,4 +21,12 @@ typedef struct {
 
 void cat_init(Cat *self, const char *name, int lives);
 
+/*
+ * Downcast controllati.
+ *
+ * Restituiscono NULL quando Animal non contiene realmente un Cat.
+ */
+Cat *cat_from_animal(Animal *animal);
+const Cat *cat_from_animal_const(const Animal *animal);
+
 #endif
