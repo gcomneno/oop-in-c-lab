@@ -17,9 +17,7 @@
  *     &dog == &dog.base
  *
  * Questo rende possibile trattare un Dog* come Animal*
- * e, con cautela, tornare da Animal* a Dog*.
- *
- * Questa è la base pratica del nostro upcast/downcast manuale.
+ * e, dopo avere verificato il tipo concreto, tornare a Dog*.
  */
 typedef struct {
     Animal base;
@@ -31,5 +29,13 @@ typedef struct {
  * Usiamo una funzione init esplicita.
  */
 void dog_init(Dog *self, const char *name, const char *breed);
+
+/*
+ * Downcast controllati.
+ *
+ * Restituiscono NULL quando Animal non contiene realmente un Dog.
+ */
+Dog *dog_from_animal(Animal *animal);
+const Dog *dog_from_animal_const(const Animal *animal);
 
 #endif

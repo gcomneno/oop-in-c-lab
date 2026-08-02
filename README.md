@@ -225,6 +225,43 @@ Quick comparison:
 
 The OOP mechanism is the same. What changes is the boundary between public API and private implementation.
 
+## Type identity and checked downcasting experiment
+
+A raw C pointer cast changes the compiler's view of an address, but it does not validate the concrete object stored there.
+
+This experiment adds:
+
+- an explicit `AnimalType` runtime tag;
+- public type-query helpers;
+- checked `Dog` and `Cat` downcasts;
+- `NULL` as the safe failure result;
+- const-preserving downcast variants.
+
+Start with the lesson:
+
+- English: [docs/type-identity-and-checked-downcasting.md](docs/type-identity-and-checked-downcasting.md)
+- Italian: [docs/type-identity-and-checked-downcasting.it.md](docs/type-identity-and-checked-downcasting.it.md)
+
+Then inspect:
+
+```text
+examples/checked_downcast_demo.c
+```
+
+Run the experiment with:
+
+```bash
+make run-checked-downcast
+```
+
+The key distinction is:
+
+| Mechanism | Purpose |
+|-----------|---------|
+| First-field layout | physical base-pointer compatibility |
+| Runtime type tag | concrete-type validation |
+| Vtable | virtual behavior selection |
+
 ## Concept 4: upcast and downcast
 
 Upcast:
@@ -249,13 +286,25 @@ Animal* -> Dog*
 
 This means going back from the base type to the concrete type.
 
-Example:
+Unchecked example:
 
 ```c
 Dog *self = (Dog *)animal;
 ```
 
-In this lab, the downcast happens inside `dog_speak` and `dog_describe`.
+This compiles, but it does not validate the runtime type.
+
+The main implementation now uses a checked helper:
+
+```c
+Dog *self = dog_from_animal(animal);
+
+if (self == NULL) {
+    /* runtime type mismatch */
+}
+```
+
+The corresponding `Cat` helper applies the same rule.
 
 ## Concept 5: virtual methods
 

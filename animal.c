@@ -1,14 +1,41 @@
+#include <stddef.h>
+
 #include "animal.h"
 
-void animal_init(Animal *self, const char *name, const AnimalVTable *vtable)
+void animal_init(
+    Animal *self,
+    const char *name,
+    AnimalType type,
+    const AnimalVTable *vtable
+)
 {
     self->name = name;
     self->vtable = vtable;
+    self->type = type;
 }
 
 const char *animal_get_name(const Animal *self)
 {
     return self->name;
+}
+
+AnimalType animal_get_type(const Animal *self)
+{
+    if (self == NULL) {
+        return ANIMAL_TYPE_UNKNOWN;
+    }
+
+    return self->type;
+}
+
+bool animal_is_dog(const Animal *self)
+{
+    return animal_get_type(self) == ANIMAL_TYPE_DOG;
+}
+
+bool animal_is_cat(const Animal *self)
+{
+    return animal_get_type(self) == ANIMAL_TYPE_CAT;
 }
 
 /*

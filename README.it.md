@@ -225,6 +225,43 @@ Confronto rapido:
 
 Il meccanismo OOP resta lo stesso. Cambia il confine tra API pubblica e implementazione privata.
 
+## Esperimento di identità di tipo e downcast controllato
+
+Un cast grezzo di puntatore C cambia il modo in cui il compilatore vede un indirizzo, ma non verifica l'oggetto concreto presente in memoria.
+
+Questo esperimento aggiunge:
+
+- un tag dinamico `AnimalType`;
+- query pubbliche sul tipo;
+- downcast controllati per `Dog` e `Cat`;
+- `NULL` come risultato sicuro in caso di errore;
+- varianti che preservano `const`.
+
+Inizia dalla lezione:
+
+- Italiano: [docs/type-identity-and-checked-downcasting.it.md](docs/type-identity-and-checked-downcasting.it.md)
+- Inglese: [docs/type-identity-and-checked-downcasting.md](docs/type-identity-and-checked-downcasting.md)
+
+Poi esamina:
+
+```text
+examples/checked_downcast_demo.c
+```
+
+Esegui l'esperimento con:
+
+```bash
+make run-checked-downcast
+```
+
+La distinzione fondamentale è:
+
+| Meccanismo | Scopo |
+|------------|-------|
+| Layout col primo campo | compatibilità fisica del puntatore base |
+| Tag dinamico | verifica del tipo concreto |
+| Vtable | selezione del comportamento virtuale |
+
 ## Concetto 4: upcast e downcast
 
 Upcast:
@@ -249,13 +286,25 @@ Animal* -> Dog*
 
 Vuol dire tornare dal tipo base al tipo concreto.
 
-Esempio:
+Esempio non controllato:
 
 ```c
 Dog *self = (Dog *)animal;
 ```
 
-Nel nostro lab il downcast avviene dentro `dog_speak` e `dog_describe`.
+Il codice compila, ma non verifica il tipo dinamico.
+
+L'implementazione principale usa ora un helper controllato:
+
+```c
+Dog *self = dog_from_animal(animal);
+
+if (self == NULL) {
+    /* tipo dinamico non compatibile */
+}
+```
+
+L'helper corrispondente di `Cat` applica la stessa regola.
 
 ## Concetto 5: metodi virtuali
 
