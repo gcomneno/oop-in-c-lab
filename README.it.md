@@ -35,6 +35,8 @@ Animal
 ├── cat.h      # tipo concreto Cat
 ├── cat.c      # implementazione Cat + cat_vtable
 ├── main.c     # uso polimorfico tramite Animal*
+├── docs/      # lezioni autonome
+├── examples/  # esperimenti separati
 └── Makefile   # build minimale
 ```
 
@@ -187,6 +189,41 @@ Esegui l'esperimento separato con:
 ```bash
 make run-container-of
 ```
+
+## Esperimento opaque pointer
+
+La demo principale lascia pubblici i layout delle struct apposta. Puoi vedere ogni campo, ogni vtable e ogni trucco di upcast.
+
+L'esperimento opaque pointer mostra lo stile opposto: un'API C professionale che nasconde i dettagli di implementazione dietro handle opachi.
+
+Inizia dalla lezione:
+
+- Italiano: [docs/opaque-pointers-lesson.it.md](docs/opaque-pointers-lesson.it.md)
+- Inglese: [docs/opaque-pointers-lesson.md](docs/opaque-pointers-lesson.md)
+
+Poi leggi i sorgenti in:
+
+```text
+examples/opaque/
+```
+
+Esegui l'esperimento separato con:
+
+```bash
+make run-opaque
+```
+
+Confronto rapido:
+
+| Argomento | Demo principale | Demo opaque |
+|-----------|-----------------|-------------|
+| Layout struct | visibile in `.h` | nascosto in `.c` |
+| Allocazione | stack | heap |
+| Accesso ai campi | diretto | solo via API |
+| Upcast | `&dog.base` | `dog_as_animal(dog)` |
+| Cleanup | automatico | `animal_destroy(...)` |
+
+Il meccanismo OOP resta lo stesso. Cambia il confine tra API pubblica e implementazione privata.
 
 ## Concetto 4: upcast e downcast
 
